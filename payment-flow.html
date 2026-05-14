@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Payment Flow — OctopusTMS SDK</title>
+  <meta name="description" content="startPayment(), PaymentResultListener interface and TransactionResult model for OctopusTMS POS SDK." />
+  <link rel="stylesheet" href="assets/css/global.css" />
+  <link rel="stylesheet" href="assets/css/sidebar.css" />
+  <link rel="stylesheet" href="assets/css/code-tabs.css" />
+  <link rel="stylesheet" href="assets/css/animations.css" />
+  <link rel="stylesheet" href="assets/css/responsive.css" />
+</head>
+<body>
+
+<div id="progress-bar"></div>
+<div id="sidebar-overlay"></div>
+<button id="mobile-menu-btn" aria-label="Open navigation">☰</button>
+
+<div class="layout">
+  <aside id="sidebar"></aside>
+
+  <main class="content">
+
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="index.html">Home</a>
+      <span class="sep">›</span>
+      <span class="current">5. Payment Flow</span>
+    </nav>
+
+    <h1>5. Payment Flow — <span class="inline-code">startPayment()</span></h1>
+
+    <p>
+      <span class="inline-code">startPayment()</span> launches the SDK's built-in transaction UI as a <span class="inline-code">DialogFragment</span>.
+    </p>
+
+    <!-- startPayment() -->
+    <div class="section-card" id="startpayment">
+      <h2>startPayment()</h2>
+
+      <div class="code-tabs">
+        <div class="tab-header">
+          <button class="tab-btn active" data-tab="sp-kotlin">Kotlin</button>
+          <button class="tab-btn" data-tab="sp-java">Java</button>
+        </div>
+
+        <div class="tab-content active" id="sp-kotlin">
+          <div class="code-wrapper">
+            <button class="copy-btn">Copy</button>
+            <pre><code>pos.startPayment(
+    activity = this,
+    amountInCents = 50000L,
+    merchantName = "My Hospital",
+    listener = object : PaymentResultListener {
+
+        override fun onApproved(
+            result: TransactionResult) {
+            Log.d(TAG,
+                "Approved RRN: ${result.rrn}")
+        }
+
+        override fun onDeclined(
+            result: TransactionResult) {
+            Log.w(TAG,
+                "Declined: ${result.responseMessage}")
+        }
+
+        override fun onCancelled() {
+
+        }
+
+        override fun onError(message: String) {
+            Log.e(TAG, "Error: $message")
+        }
+    }
+)</code></pre>
+          </div>
+        </div>
+
+        <div class="tab-content" id="sp-java">
+          <div class="code-wrapper">
+            <button class="copy-btn">Copy</button>
+            <pre><code>pos.startPayment(
+    this,
+    50000L,
+    "My Hospital",
+    new PaymentResultListener() {
+
+        @Override
+        public void onApproved(TransactionResult result) {
+            Log.d(TAG, "Approved RRN: " + result.getRrn());
+        }
+
+        @Override
+        public void onDeclined(TransactionResult result) {
+            Log.w(TAG,
+                "Declined: " + result.getResponseMessage());
+        }
+
+        @Override
+        public void onCancelled() {
+
+        }
+
+        @Override
+        public void onError(String message) {
+            Log.e(TAG, "Error: " + message);
+        }
+    }
+);</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="warning-box">
+        <span class="box-icon">⚠️</span>
+        <div class="box-content">
+          <strong>WARNING</strong>
+          <span class="inline-code">startPayment()</span> must be called from the main thread.
+        </div>
+      </div>
+    </div>
+
+    <!-- PaymentResultListener -->
+    <div class="section-card" id="listener">
+      <h2>5.1 PaymentResultListener Interface</h2>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Method</th>
+              <th>Called when</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>onApproved(result)</td>
+              <td>The issuer approved the transaction.</td>
+            </tr>
+            <tr>
+              <td>onDeclined(result)</td>
+              <td>The issuer declined the transaction.</td>
+            </tr>
+            <tr>
+              <td>onCancelled()</td>
+              <td>User cancelled or timed out.</td>
+            </tr>
+            <tr>
+              <td>onError(message)</td>
+              <td>Non-recoverable SDK error.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TransactionResult -->
+    <div class="section-card" id="result">
+      <h2>5.2 TransactionResult Model</h2>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Field</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>transactionRef</td>
+              <td>String</td>
+              <td>SDK-generated unique transaction reference.</td>
+            </tr>
+            <tr>
+              <td>terminalId</td>
+              <td>String</td>
+              <td>Terminal ID from TMS.</td>
+            </tr>
+            <tr>
+              <td>maskedPan</td>
+              <td>String</td>
+              <td>Masked card number.</td>
+            </tr>
+            <tr>
+              <td>cardType</td>
+              <td>String</td>
+              <td>Card scheme.</td>
+            </tr>
+            <tr>
+              <td>responseCode</td>
+              <td>String</td>
+              <td>ISO 8583 response code.</td>
+            </tr>
+            <tr>
+              <td>responseMessage</td>
+              <td>String</td>
+              <td>Human-readable response message.</td>
+            </tr>
+            <tr>
+              <td>rrn</td>
+              <td>String</td>
+              <td>Retrieval reference number from the acquirer.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <nav class="page-nav" aria-label="Page navigation">
+      <a href="key-exchange.html" class="prev">
+        <span>←</span>
+        <span>
+          <span class="nav-label">Previous</span>
+          <span class="nav-title">Key Exchange</span>
+        </span>
+      </a>
+      <a href="printing.html" class="next">
+        <span>
+          <span class="nav-label">Next</span>
+          <span class="nav-title">Printing</span>
+        </span>
+        <span>→</span>
+      </a>
+    </nav>
+
+    <footer>
+      <p>OctopusTMS SDK Integration Guide — Version 1.0</p>
+      <p style="margin-top:0.5rem;">&copy; UNISWITCH &middot; <strong>OctopusTMS</strong> &middot; CONFIDENTIAL</p>
+    </footer>
+
+  </main>
+</div>
+
+<script src="assets/js/progress.js"></script>
+<script src="assets/js/sidebar.js"></script>
+<script src="assets/js/tabs.js"></script>
+<script src="assets/js/copy.js"></script>
+<script src="assets/js/search.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>

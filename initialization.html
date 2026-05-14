@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Initialisation — OctopusTMS SDK</title>
+  <meta name="description" content="How to initialise the OctopusTMS POS SDK singleton using getInstance() and initialize()." />
+  <link rel="stylesheet" href="assets/css/global.css" />
+  <link rel="stylesheet" href="assets/css/sidebar.css" />
+  <link rel="stylesheet" href="assets/css/code-tabs.css" />
+  <link rel="stylesheet" href="assets/css/animations.css" />
+  <link rel="stylesheet" href="assets/css/responsive.css" />
+</head>
+<body>
+
+<div id="progress-bar"></div>
+<div id="sidebar-overlay"></div>
+<button id="mobile-menu-btn" aria-label="Open navigation">☰</button>
+
+<div class="layout">
+  <aside id="sidebar"></aside>
+
+  <main class="content">
+
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="index.html">Home</a>
+      <span class="sep">›</span>
+      <span class="current">3. Initialisation</span>
+    </nav>
+
+    <h1>3. Initialisation</h1>
+
+    <p>
+      OctopusTMS is a thread-safe singleton. You must obtain the instance using <span class="inline-code">getInstance()</span> and call <span class="inline-code">initialize()</span> before any other method.
+    </p>
+
+    <!-- 3.1 getInstance -->
+    <div class="section-card" id="getinstance">
+      <h2>3.1 getInstance()</h2>
+
+      <div class="code-tabs">
+        <div class="tab-header">
+          <button class="tab-btn active" data-tab="gi-kotlin">Kotlin</button>
+          <button class="tab-btn" data-tab="gi-java">Java</button>
+        </div>
+
+        <div class="tab-content active" id="gi-kotlin">
+          <div class="code-wrapper">
+            <button class="copy-btn">Copy</button>
+            <pre><code>val pos = OctopusTMS.getInstance(
+    context = applicationContext,
+    config = OctopusTMS.Config(
+        appName = "MyApp",
+        enableLogs = BuildConfig.DEBUG
+    )
+)</code></pre>
+          </div>
+        </div>
+
+        <div class="tab-content" id="gi-java">
+          <div class="code-wrapper">
+            <button class="copy-btn">Copy</button>
+            <pre><code>OctopusTMS pos = OctopusTMS.getInstance(
+    getApplicationContext(),
+    new OctopusTMS.Config("MyApp", BuildConfig.DEBUG)
+);</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="warning-box">
+        <span class="box-icon">⚠️</span>
+        <div class="box-content">
+          <strong>WARNING</strong>
+          Always pass <span class="inline-code">applicationContext</span>, never an Activity context.
+        </div>
+      </div>
+    </div>
+
+    <!-- 3.2 initialize -->
+    <div class="section-card" id="initialize">
+      <h2>3.2 initialize()</h2>
+
+      <div class="code-tabs">
+        <div class="tab-header">
+          <button class="tab-btn active" data-tab="init-kotlin">Kotlin</button>
+          <button class="tab-btn" data-tab="init-java">Java</button>
+        </div>
+
+        <div class="tab-content active" id="init-kotlin">
+          <div class="code-wrapper">
+            <button class="copy-btn">Copy</button>
+            <pre><code>pos.initialize { result ->
+    when (result) {
+        is OctopusTMS.InitResult.Success -> {
+            Log.d(TAG,
+                "Connected: ${result.detectedOEM}")
+        }
+
+        is OctopusTMS.InitResult.Failed -> {
+            Log.e(TAG,
+                "Init failed: ${result.reason}")
+        }
+
+        is OctopusTMS.InitResult.UnsupportedDevice -> {
+            Log.e(TAG, "Unsupported device")
+        }
+    }
+}</code></pre>
+          </div>
+        </div>
+
+        <div class="tab-content" id="init-java">
+          <div class="code-wrapper">
+            <button class="copy-btn">Copy</button>
+            <pre><code>pos.initialize(result -> {
+    if (result instanceof OctopusTMS.InitResult.Success) {
+        OctopusTMS.InitResult.Success s =
+            (OctopusTMS.InitResult.Success) result;
+        Log.d(TAG, "Connected: " + s.getDetectedOEM());
+
+    } else if (result instanceof OctopusTMS.InitResult.Failed) {
+        OctopusTMS.InitResult.Failed f =
+            (OctopusTMS.InitResult.Failed) result;
+        Log.e(TAG, "Init failed: " + f.getReason());
+
+    } else if (result instanceof OctopusTMS.InitResult.UnsupportedDevice) {
+        Log.e(TAG, "Unsupported device");
+    }
+});</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- InitResult table -->
+      <h3>InitResult Sealed Class</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Result</th>
+              <th>Meaning</th>
+              <th>Key Field</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>InitResult.Success</td>
+              <td>SDK connected to hardware service successfully</td>
+              <td><span class="inline-code">detectedOEM</span></td>
+            </tr>
+            <tr>
+              <td>InitResult.Failed</td>
+              <td>SDK could not connect to the hardware service</td>
+              <td><span class="inline-code">reason: String</span></td>
+            </tr>
+            <tr>
+              <td>InitResult.UnsupportedDevice</td>
+              <td>Device OEM is not supported by this SDK version</td>
+              <td>—</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <nav class="page-nav" aria-label="Page navigation">
+      <a href="setup.html" class="prev">
+        <span>←</span>
+        <span>
+          <span class="nav-label">Previous</span>
+          <span class="nav-title">Requirements &amp; Setup</span>
+        </span>
+      </a>
+      <a href="key-exchange.html" class="next">
+        <span>
+          <span class="nav-label">Next</span>
+          <span class="nav-title">Key Exchange</span>
+        </span>
+        <span>→</span>
+      </a>
+    </nav>
+
+    <footer>
+      <p>OctopusTMS SDK Integration Guide — Version 1.0</p>
+      <p style="margin-top:0.5rem;">&copy; UNISWITCH &middot; <strong>OctopusTMS</strong> &middot; CONFIDENTIAL</p>
+    </footer>
+
+  </main>
+</div>
+
+<script src="assets/js/progress.js"></script>
+<script src="assets/js/sidebar.js"></script>
+<script src="assets/js/tabs.js"></script>
+<script src="assets/js/copy.js"></script>
+<script src="assets/js/search.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>

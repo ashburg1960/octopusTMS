@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Overview — OctopusTMS SDK</title>
+  <meta name="description" content="Overview of the OctopusTMS POS SDK, multi-device support table, and key capabilities." />
+  <link rel="stylesheet" href="assets/css/global.css" />
+  <link rel="stylesheet" href="assets/css/sidebar.css" />
+  <link rel="stylesheet" href="assets/css/code-tabs.css" />
+  <link rel="stylesheet" href="assets/css/animations.css" />
+  <link rel="stylesheet" href="assets/css/responsive.css" />
+</head>
+<body>
+
+<div id="progress-bar"></div>
+<div id="sidebar-overlay"></div>
+<button id="mobile-menu-btn" aria-label="Open navigation">☰</button>
+
+<div class="layout">
+  <aside id="sidebar"></aside>
+
+  <main class="content">
+
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="index.html">Home</a>
+      <span class="sep">›</span>
+      <span class="current">1. Overview</span>
+    </nav>
+
+    <h1>1. Overview</h1>
+
+    <p>
+      The OctopusTMS POS SDK is an Android library that enables partner applications to process card payments through UNISWITCH-certified POS terminals. The SDK abstracts all hardware communication, EMV processing, key management, and printer control behind a clean, high-level API.
+    </p>
+
+    <!-- Multi-device support -->
+    <div class="section-card" id="multi-device">
+      <h2>Multi-device Support</h2>
+
+      <p>
+        A single integration works across all supported OEM devices — the SDK automatically detects the hardware at runtime and routes all calls to the appropriate driver internally.
+      </p>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>OEM</th>
+              <th>Status</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>HorizonPay</td>
+              <td><span class="status-ok">✓ Supported</span></td>
+              <td>Full EMV contact + contactless, PIN pad, thermal printer</td>
+            </tr>
+            <tr>
+              <td>Topwise</td>
+              <td><span class="status-ok">✓ Supported</span></td>
+              <td>Full EMV contact + contactless (Paywave/Paypass/QPBOC), PIN pad, thermal printer</td>
+            </tr>
+            <tr>
+              <td>Additional OEMs</td>
+              <td><span class="status-soon">Coming soon</span></td>
+              <td>New device drivers are added in SDK updates without API changes</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Key capabilities -->
+    <div class="section-card" id="capabilities">
+      <h2>Key Capabilities</h2>
+      <ul>
+        <li>One-call payment flow via <span class="inline-code">startPayment()</span></li>
+        <li>Automatic OEM detection</li>
+        <li>Automatic terminal-key provisioning from the UNISWITCH TMS</li>
+        <li>Thermal receipt printing from any <span class="inline-code">Bitmap</span></li>
+        <li><span class="inline-code">BitmapBuilder</span> utility for constructing pixel-perfect formatted receipt bitmaps</li>
+      </ul>
+    </div>
+
+    <!-- Page navigation -->
+    <nav class="page-nav" aria-label="Page navigation">
+      <a href="index.html" class="prev">
+        <span>←</span>
+        <span>
+          <span class="nav-label">Previous</span>
+          <span class="nav-title">Home</span>
+        </span>
+      </a>
+      <a href="setup.html" class="next">
+        <span>
+          <span class="nav-label">Next</span>
+          <span class="nav-title">Requirements &amp; Setup</span>
+        </span>
+        <span>→</span>
+      </a>
+    </nav>
+
+    <footer>
+      <p>OctopusTMS SDK Integration Guide — Version 1.0</p>
+      <p style="margin-top:0.5rem;">&copy; UNISWITCH &middot; <strong>OctopusTMS</strong> &middot; CONFIDENTIAL</p>
+    </footer>
+
+  </main>
+</div>
+
+<script src="assets/js/progress.js"></script>
+<script src="assets/js/sidebar.js"></script>
+<script src="assets/js/search.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>

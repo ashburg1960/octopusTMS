@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Status &amp; Utility Methods — OctopusTMS SDK</title>
+  <meta name="description" content="Utility methods for the OctopusTMS POS SDK: isServiceAlive, getDetectedOEM, isPrinterReady, cancelTransaction." />
+  <link rel="stylesheet" href="assets/css/global.css" />
+  <link rel="stylesheet" href="assets/css/sidebar.css" />
+  <link rel="stylesheet" href="assets/css/code-tabs.css" />
+  <link rel="stylesheet" href="assets/css/animations.css" />
+  <link rel="stylesheet" href="assets/css/responsive.css" />
+</head>
+<body>
+
+<div id="progress-bar"></div>
+<div id="sidebar-overlay"></div>
+<button id="mobile-menu-btn" aria-label="Open navigation">☰</button>
+
+<div class="layout">
+  <aside id="sidebar"></aside>
+
+  <main class="content">
+
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="index.html">Home</a>
+      <span class="sep">›</span>
+      <span class="current">7. Status &amp; Utility Methods</span>
+    </nav>
+
+    <h1>7. Status &amp; Utility Methods</h1>
+
+    <p>
+      These synchronous helper methods let you inspect the current state of the SDK and the underlying hardware at any time after <span class="inline-code">initialize()</span> succeeds.
+    </p>
+
+    <div class="section-card">
+      <h2>Method Reference</h2>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Method</th>
+              <th>Returns</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>isServiceAlive()</td>
+              <td>Boolean</td>
+              <td>Returns true if hardware service is connected.</td>
+            </tr>
+            <tr>
+              <td>getDetectedOEM()</td>
+              <td>OEM</td>
+              <td>Returns the detected OEM enum value.</td>
+            </tr>
+            <tr>
+              <td>isPrinterReady()</td>
+              <td>Boolean</td>
+              <td>Returns true if printer is ready.</td>
+            </tr>
+            <tr>
+              <td>cancelTransaction()</td>
+              <td>Unit</td>
+              <td>Requests cancellation of current transaction.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- isServiceAlive -->
+    <div class="section-card" id="alive">
+      <h2>isServiceAlive()</h2>
+      <div class="code-tabs">
+        <div class="tab-header">
+          <button class="tab-btn active" data-tab="sa-kotlin">Kotlin</button>
+          <button class="tab-btn" data-tab="sa-java">Java</button>
+        </div>
+        <div class="tab-content active" id="sa-kotlin">
+          <div class="code-wrapper">
+            <button class="copy-btn">Copy</button>
+            <pre><code>if (pos.isServiceAlive()) {
+    // Hardware service is connected
+    // Safe to call startPayment()
+}</code></pre>
+          </div>
+        </div>
+        <div class="tab-content" id="sa-java">
+          <div class="code-wrapper">
+            <button class="copy-btn">Copy</button>
+            <pre><code>if (pos.isServiceAlive()) {
+    // Hardware service is connected
+    // Safe to call startPayment()
+}</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- getDetectedOEM -->
+    <div class="section-card" id="oem">
+      <h2>getDetectedOEM()</h2>
+      <div class="code-tabs">
+        <div class="tab-header">
+          <button class="tab-btn active" data-tab="oem-kotlin">Kotlin</button>
+          <button class="tab-btn" data-tab="oem-java">Java</button>
+        </div>
+        <div class="tab-content active" id="oem-kotlin">
+          <div class="code-wrapper">
+            <button class="copy-btn">Copy</button>
+            <pre><code>val oem = pos.getDetectedOEM()
+Log.d(TAG, "Running on: $oem")</code></pre>
+          </div>
+        </div>
+        <div class="tab-content" id="oem-java">
+          <div class="code-wrapper">
+            <button class="copy-btn">Copy</button>
+            <pre><code>OEM oem = pos.getDetectedOEM();
+Log.d(TAG, "Running on: " + oem);</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- isPrinterReady -->
+    <div class="section-card" id="printer">
+      <h2>isPrinterReady()</h2>
+      <div class="code-tabs">
+        <div class="tab-header">
+          <button class="tab-btn active" data-tab="ipr-kotlin">Kotlin</button>
+          <button class="tab-btn" data-tab="ipr-java">Java</button>
+        </div>
+        <div class="tab-content active" id="ipr-kotlin">
+          <div class="code-wrapper">
+            <button class="copy-btn">Copy</button>
+            <pre><code>if (pos.isPrinterReady()) {
+    pos.print(receiptBitmap) { ok, msg ->
+        Log.d(TAG, "Print result: $ok")
+    }
+} else {
+    Log.w(TAG, "Printer not ready")
+}</code></pre>
+          </div>
+        </div>
+        <div class="tab-content" id="ipr-java">
+          <div class="code-wrapper">
+            <button class="copy-btn">Copy</button>
+            <pre><code>if (pos.isPrinterReady()) {
+    pos.print(receiptBitmap, (ok, msg) ->
+        Log.d(TAG, "Print result: " + ok));
+} else {
+    Log.w(TAG, "Printer not ready");
+}</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- cancelTransaction -->
+    <div class="section-card" id="cancel">
+      <h2>cancelTransaction()</h2>
+      <div class="code-tabs">
+        <div class="tab-header">
+          <button class="tab-btn active" data-tab="ct-kotlin">Kotlin</button>
+          <button class="tab-btn" data-tab="ct-java">Java</button>
+        </div>
+        <div class="tab-content active" id="ct-kotlin">
+          <div class="code-wrapper">
+            <button class="copy-btn">Copy</button>
+            <pre><code>// Call this if you need to abort an in-progress transaction
+pos.cancelTransaction()</code></pre>
+          </div>
+        </div>
+        <div class="tab-content" id="ct-java">
+          <div class="code-wrapper">
+            <button class="copy-btn">Copy</button>
+            <pre><code>// Call this if you need to abort an in-progress transaction
+pos.cancelTransaction();</code></pre>
+          </div>
+        </div>
+      </div>
+      <div class="note-box">
+        <span class="box-icon">ℹ️</span>
+        <div class="box-content">
+          <strong>NOTE</strong>
+          Cancellation is a request — the SDK will call <span class="inline-code">onCancelled()</span> on the <span class="inline-code">PaymentResultListener</span> once the hardware acknowledges the cancel.
+        </div>
+      </div>
+    </div>
+
+    <nav class="page-nav" aria-label="Page navigation">
+      <a href="printing.html" class="prev">
+        <span>←</span>
+        <span>
+          <span class="nav-label">Previous</span>
+          <span class="nav-title">Printing</span>
+        </span>
+      </a>
+      <a href="sdk-lifecycle.html" class="next">
+        <span>
+          <span class="nav-label">Next</span>
+          <span class="nav-title">SDK Lifecycle</span>
+        </span>
+        <span>→</span>
+      </a>
+    </nav>
+
+    <footer>
+      <p>OctopusTMS SDK Integration Guide — Version 1.0</p>
+      <p style="margin-top:0.5rem;">&copy; UNISWITCH &middot; <strong>OctopusTMS</strong> &middot; CONFIDENTIAL</p>
+    </footer>
+
+  </main>
+</div>
+
+<script src="assets/js/progress.js"></script>
+<script src="assets/js/sidebar.js"></script>
+<script src="assets/js/tabs.js"></script>
+<script src="assets/js/copy.js"></script>
+<script src="assets/js/search.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>

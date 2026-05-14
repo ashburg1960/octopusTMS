@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Error Reference — OctopusTMS SDK</title>
+  <meta name="description" content="Full error reference for OctopusTMS POS SDK: IllegalStateException, InflateException, UnsupportedDevice, and printer errors." />
+  <link rel="stylesheet" href="assets/css/global.css" />
+  <link rel="stylesheet" href="assets/css/sidebar.css" />
+  <link rel="stylesheet" href="assets/css/code-tabs.css" />
+  <link rel="stylesheet" href="assets/css/animations.css" />
+  <link rel="stylesheet" href="assets/css/responsive.css" />
+</head>
+<body>
+
+<div id="progress-bar"></div>
+<div id="sidebar-overlay"></div>
+<button id="mobile-menu-btn" aria-label="Open navigation">☰</button>
+
+<div class="layout">
+  <aside id="sidebar"></aside>
+
+  <main class="content">
+
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="index.html">Home</a>
+      <span class="sep">›</span>
+      <span class="current">9. Error Reference</span>
+    </nav>
+
+    <h1>9. Error Reference</h1>
+
+    <p>
+      The table below lists all known errors and symptoms, their most likely cause, and the recommended resolution. Match the exception class or symptom you see in logcat to the appropriate row.
+    </p>
+
+    <!-- Main error table -->
+    <div class="section-card">
+      <h2>Error Table</h2>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Error / Symptom</th>
+              <th>Likely Cause</th>
+              <th>Resolution</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>IllegalStateException</td>
+              <td>SDK not initialized</td>
+              <td>Call <span class="inline-code">getInstance(context, config)</span></td>
+            </tr>
+            <tr>
+              <td>InflateException</td>
+              <td>ConstraintLayout missing</td>
+              <td>Add <span class="inline-code">constraintlayout</span> dependency</td>
+            </tr>
+            <tr>
+              <td>UnsupportedDevice</td>
+              <td>OEM not recognised</td>
+              <td>Use supported device (HorizonPay or Topwise)</td>
+            </tr>
+            <tr>
+              <td>Print callback: success=false</td>
+              <td>Printer overheated or out of paper</td>
+              <td>Check printer hardware</td>
+            </tr>
+            <tr>
+              <td>Key exchange: success=false</td>
+              <td>TMS unreachable or device not registered</td>
+              <td>Verify network connectivity and device registration on UNISWITCH TMS</td>
+            </tr>
+            <tr>
+              <td>SecurityException on location</td>
+              <td>Runtime location permission not granted</td>
+              <td>Request ACCESS_FINE_LOCATION and ACCESS_COARSE_LOCATION at runtime</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- IllegalStateException detail -->
+    <div class="section-card" id="illegal-state">
+      <h2>IllegalStateException — SDK Not Initialized</h2>
+
+      <div class="warning-box">
+        <span class="box-icon">⚠️</span>
+        <div class="box-content">
+          <strong>Symptom</strong>
+          Any SDK method call throws <span class="inline-code">IllegalStateException</span>.
+        </div>
+      </div>
+
+      <h3>Cause</h3>
+      <p>
+        You called an SDK method before <span class="inline-code">getInstance()</span>, or after <span class="inline-code">destroy()</span> was called, causing the singleton to be null.
+      </p>
+
+      <h3>Resolution</h3>
+      <div class="code-wrapper">
+        <button class="copy-btn">Copy</button>
+        <pre><code>val pos = OctopusTMS.getInstance(
+    context = applicationContext,
+    config  = OctopusTMS.Config(
+        appName    = "MyApp",
+        enableLogs = BuildConfig.DEBUG
+    )
+)</code></pre>
+      </div>
+    </div>
+
+    <!-- InflateException detail -->
+    <div class="section-card" id="inflate">
+      <h2>InflateException — ConstraintLayout Missing</h2>
+
+      <div class="warning-box">
+        <span class="box-icon">⚠️</span>
+        <div class="box-content">
+          <strong>Symptom</strong>
+          App crashes on <span class="inline-code">startPayment()</span> with <span class="inline-code">android.view.InflateException: Error inflating class androidx.constraintlayout.widget.ConstraintLayout</span>.
+        </div>
+      </div>
+
+      <h3>Resolution</h3>
+      <div class="code-wrapper">
+        <button class="copy-btn">Copy</button>
+        <pre><code>// build.gradle.kts
+dependencies {
+    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+}</code></pre>
+      </div>
+    </div>
+
+    <!-- UnsupportedDevice detail -->
+    <div class="section-card" id="unsupported">
+      <h2>UnsupportedDevice — OEM Not Recognised</h2>
+
+      <div class="warning-box">
+        <span class="box-icon">⚠️</span>
+        <div class="box-content">
+          <strong>Symptom</strong>
+          <span class="inline-code">initialize()</span> callback returns <span class="inline-code">InitResult.UnsupportedDevice</span>.
+        </div>
+      </div>
+
+      <h3>Cause</h3>
+      <p>
+        The SDK could not match the hardware to any supported OEM driver. This occurs when running on a device that is not HorizonPay or Topwise, or on an emulator.
+      </p>
+
+      <h3>Resolution</h3>
+      <p>
+        Use a supported OEM device. New device drivers are added in SDK updates without API changes — contact UNISWITCH for the latest SDK version if your device model is not yet supported.
+      </p>
+    </div>
+
+    <nav class="page-nav" aria-label="Page navigation">
+      <a href="sdk-lifecycle.html" class="prev">
+        <span>←</span>
+        <span>
+          <span class="nav-label">Previous</span>
+          <span class="nav-title">SDK Lifecycle</span>
+        </span>
+      </a>
+      <a href="integration-example.html" class="next">
+        <span>
+          <span class="nav-label">Next</span>
+          <span class="nav-title">Integration Example</span>
+        </span>
+        <span>→</span>
+      </a>
+    </nav>
+
+    <footer>
+      <p>OctopusTMS SDK Integration Guide — Version 1.0</p>
+      <p style="margin-top:0.5rem;">&copy; UNISWITCH &middot; <strong>OctopusTMS</strong> &middot; CONFIDENTIAL</p>
+    </footer>
+
+  </main>
+</div>
+
+<script src="assets/js/progress.js"></script>
+<script src="assets/js/sidebar.js"></script>
+<script src="assets/js/tabs.js"></script>
+<script src="assets/js/copy.js"></script>
+<script src="assets/js/search.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>

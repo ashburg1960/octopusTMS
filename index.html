@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OctopusTMS POS SDK — Integration Guide</title>
+  <meta name="description" content="Official integration guide for the OctopusTMS POS SDK. Android library for UNISWITCH-certified POS terminals." />
+
+  <link rel="stylesheet" href="assets/css/global.css" />
+  <link rel="stylesheet" href="assets/css/sidebar.css" />
+  <link rel="stylesheet" href="assets/css/code-tabs.css" />
+  <link rel="stylesheet" href="assets/css/animations.css" />
+  <link rel="stylesheet" href="assets/css/responsive.css" />
+</head>
+<body>
+
+<div id="progress-bar"></div>
+<div id="sidebar-overlay"></div>
+<button id="mobile-menu-btn" aria-label="Open navigation">☰</button>
+
+<div class="layout">
+
+  <aside id="sidebar"></aside>
+
+  <main class="content">
+
+    <!-- Hero -->
+    <section class="hero">
+      <div class="hero-badges">
+        <span class="badge">Version 1.0</span>
+        <span class="badge">Android API 21+</span>
+        <span class="badge">Kotlin &amp; Java</span>
+        <span class="badge">minSdk 21</span>
+      </div>
+
+      <h1>OCTOPUS TMS<br>POS SDK</h1>
+      <p>Integration Guide for Android</p>
+
+      <div class="hero-grid">
+        <div class="hero-card">
+          <div class="label">Supports</div>
+          <div class="value">HorizonPay · Topwise · More devices coming soon</div>
+        </div>
+        <div class="hero-card">
+          <div class="label">Requires</div>
+          <div class="value">ViewBinding · ConstraintLayout</div>
+        </div>
+        <div class="hero-card">
+          <div class="label">Communication</div>
+          <div class="value">UNISWITCH TMS (OkHttp · Gson · BouncyCastle)</div>
+        </div>
+        <div class="hero-card">
+          <div class="label">Payment</div>
+          <div class="value">EMV Contact · Contactless · PIN Entry</div>
+        </div>
+      </div>
+
+      <div class="hero-confidential">Confidential — For UNISWITCH Partner Apps Only</div>
+    </section>
+
+    <!-- Quick start buttons -->
+    <div style="display:flex;gap:1rem;flex-wrap:wrap;margin:2rem 0 1rem;">
+      <a href="overview.html" style="display:inline-flex;align-items:center;gap:0.5rem;background:var(--clr-blue-600);color:white;text-decoration:none;padding:0.75rem 1.5rem;border-radius:var(--radius-md);font-weight:700;font-size:0.9rem;box-shadow:0 4px 14px rgba(37,99,235,0.35);transition:var(--transition);" onmouseover="this.style.background='#003b80'" onmouseout="this.style.background='var(--clr-blue-600)'">
+        Get Started →
+      </a>
+      <a href="integration-example.html" style="display:inline-flex;align-items:center;gap:0.5rem;background:white;color:var(--clr-slate-800);text-decoration:none;padding:0.75rem 1.5rem;border-radius:var(--radius-md);font-weight:700;font-size:0.9rem;border:1px solid var(--clr-border);box-shadow:var(--shadow-sm);transition:var(--transition);" onmouseover="this.style.borderColor='var(--clr-blue-600)'" onmouseout="this.style.borderColor='var(--clr-border)'">
+        Full Example
+      </a>
+    </div>
+
+    <!-- Navigation grid -->
+    <h2 style="margin-top:2.5rem;">Documentation Sections</h2>
+
+    <div class="nav-grid">
+
+      <a href="overview.html" class="doc-card">
+        <span class="card-num">Section 1</span>
+        <h3>Overview</h3>
+        <p>Multi-device support, key capabilities, and how the SDK abstracts hardware communication.</p>
+        <span class="card-arrow">→</span>
+      </a>
+
+      <a href="setup.html" class="doc-card">
+        <span class="card-num">Section 2</span>
+        <h3>Requirements &amp; Setup</h3>
+        <p>Gradle dependencies, ViewBinding, ConstraintLayout, and AndroidManifest permissions.</p>
+        <span class="card-arrow">→</span>
+      </a>
+
+      <a href="initialization.html" class="doc-card">
+        <span class="card-num">Section 3</span>
+        <h3>Initialisation</h3>
+        <p>Obtaining the singleton instance with <code>getInstance()</code> and calling <code>initialize()</code>.</p>
+        <span class="card-arrow">→</span>
+      </a>
+
+      <a href="key-exchange.html" class="doc-card">
+        <span class="card-num">Section 4</span>
+        <h3>Key Exchange</h3>
+        <p>Downloading and injecting terminal master keys via <code>downloadAndInjectKeys()</code>.</p>
+        <span class="card-arrow">→</span>
+      </a>
+
+      <a href="payment-flow.html" class="doc-card">
+        <span class="card-num">Section 5</span>
+        <h3>Payment Flow</h3>
+        <p>Launching the transaction UI via <code>startPayment()</code>, handling all result callbacks.</p>
+        <span class="card-arrow">→</span>
+      </a>
+
+      <a href="printing.html" class="doc-card">
+        <span class="card-num">Section 6</span>
+        <h3>Printing</h3>
+        <p>Thermal receipt printing using <code>print()</code> and the <code>BitmapBuilder</code> utility.</p>
+        <span class="card-arrow">→</span>
+      </a>
+
+      <a href="utility-methods.html" class="doc-card">
+        <span class="card-num">Section 7</span>
+        <h3>Status &amp; Utility Methods</h3>
+        <p>Helper methods for checking service state, OEM detection, and transaction cancellation.</p>
+        <span class="card-arrow">→</span>
+      </a>
+
+      <a href="sdk-lifecycle.html" class="doc-card">
+        <span class="card-num">Section 8</span>
+        <h3>SDK Lifecycle</h3>
+        <p>Properly tearing down the SDK singleton with <code>destroy()</code> in <code>onDestroy()</code>.</p>
+        <span class="card-arrow">→</span>
+      </a>
+
+      <a href="errors.html" class="doc-card">
+        <span class="card-num">Section 9</span>
+        <h3>Error Reference</h3>
+        <p>All known error types with their likely cause and step-by-step resolution.</p>
+        <span class="card-arrow">→</span>
+      </a>
+
+      <a href="integration-example.html" class="doc-card">
+        <span class="card-num">Section 10</span>
+        <h3>Complete Integration Example</h3>
+        <p>Full end-to-end <code>MainActivity</code> in Kotlin and Java showing the entire SDK flow.</p>
+        <span class="card-arrow">→</span>
+      </a>
+
+    </div>
+
+    <footer>
+      <p>End of OctopusTMS SDK Integration Guide — Version 1.0</p>
+      <p style="margin-top:0.5rem;">&copy; UNISWITCH &middot; Powered by <strong>OctopusTMS</strong> &middot; CONFIDENTIAL</p>
+    </footer>
+
+  </main>
+</div>
+
+<script src="assets/js/progress.js"></script>
+<script src="assets/js/sidebar.js"></script>
+<script src="assets/js/search.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>

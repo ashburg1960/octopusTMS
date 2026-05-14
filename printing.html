@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Printing — OctopusTMS SDK</title>
+  <meta name="description" content="Thermal receipt printing using print() and the BitmapBuilder utility in OctopusTMS POS SDK." />
+  <link rel="stylesheet" href="assets/css/global.css" />
+  <link rel="stylesheet" href="assets/css/sidebar.css" />
+  <link rel="stylesheet" href="assets/css/code-tabs.css" />
+  <link rel="stylesheet" href="assets/css/animations.css" />
+  <link rel="stylesheet" href="assets/css/responsive.css" />
+</head>
+<body>
+
+<div id="progress-bar"></div>
+<div id="sidebar-overlay"></div>
+<button id="mobile-menu-btn" aria-label="Open navigation">☰</button>
+
+<div class="layout">
+  <aside id="sidebar"></aside>
+
+  <main class="content">
+
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="index.html">Home</a>
+      <span class="sep">›</span>
+      <span class="current">6. Printing</span>
+    </nav>
+
+    <h1>6. Printing</h1>
+
+    <!-- 6.1 print() -->
+    <div class="section-card" id="print">
+      <h2>6.1 print()</h2>
+
+      <div class="code-tabs">
+        <div class="tab-header">
+          <button class="tab-btn active" data-tab="pr-kotlin">Kotlin</button>
+          <button class="tab-btn" data-tab="pr-java">Java</button>
+        </div>
+
+        <div class="tab-content active" id="pr-kotlin">
+          <div class="code-wrapper">
+            <button class="copy-btn">Copy</button>
+            <pre><code>pos.print(bitmap) { success, message ->
+    if (success) {
+        Toast.makeText(this,
+            "Printed successfully",
+            Toast.LENGTH_SHORT).show()
+    } else {
+        Toast.makeText(this,
+            "Print error: $message",
+            Toast.LENGTH_LONG).show()
+    }
+}</code></pre>
+          </div>
+        </div>
+
+        <div class="tab-content" id="pr-java">
+          <div class="code-wrapper">
+            <button class="copy-btn">Copy</button>
+            <pre><code>pos.print(bitmap, (success, message) -> {
+    if (success) {
+        Toast.makeText(this,
+            "Printed successfully",
+            Toast.LENGTH_SHORT).show();
+    } else {
+        Toast.makeText(this,
+            "Print error: " + message,
+            Toast.LENGTH_LONG).show();
+    }
+});</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6.2 BitmapBuilder -->
+    <div class="section-card" id="bitmapbuilder">
+      <h2>6.2 BitmapBuilder — Building Custom Receipt Bitmaps</h2>
+
+      <div class="code-wrapper">
+        <button class="copy-btn">Copy</button>
+        <pre><code>val builder = BitmapBuilder(paperWidth = 384)</code></pre>
+      </div>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Method signature</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>addLogo(bitmap, width, height)</td>
+              <td>Centres a Bitmap logo at the top.</td>
+            </tr>
+            <tr>
+              <td>addCentered(text, textSize, bold)</td>
+              <td>Prints a single centred text line.</td>
+            </tr>
+            <tr>
+              <td>addLeft(text, textSize, bold)</td>
+              <td>Prints a left-aligned text line.</td>
+            </tr>
+            <tr>
+              <td>addRow(label, value)</td>
+              <td>Two-column key/value row.</td>
+            </tr>
+            <tr>
+              <td>addSeparator()</td>
+              <td>Prints a full-width dashed separator line.</td>
+            </tr>
+            <tr>
+              <td>addGap(px)</td>
+              <td>Adds vertical whitespace of <span class="inline-code">px</span> pixels.</td>
+            </tr>
+            <tr>
+              <td>addStatusBanner(text)</td>
+              <td>Prints a large bold status banner (e.g. APPROVED).</td>
+            </tr>
+            <tr>
+              <td>build()</td>
+              <td>Returns the assembled <span class="inline-code">Bitmap</span>.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Custom Receipt Example</h3>
+
+      <div class="code-tabs">
+        <div class="tab-header">
+          <button class="tab-btn active" data-tab="bb-kotlin">Kotlin</button>
+          <button class="tab-btn" data-tab="bb-java">Java</button>
+        </div>
+
+        <div class="tab-content active" id="bb-kotlin">
+          <div class="code-wrapper">
+            <button class="copy-btn">Copy</button>
+            <pre><code>return BitmapBuilder(paperWidth = 384)
+    .addLogo(logoBitmap, 150, 150)
+    .addCentered("MY HOSPITAL", 19, true)
+    .addGap(10)
+    .addCentered("CUSTOMER RECEIPT", 23, true)
+    .addGap(20)
+    .addRow("TERMINAL ID:",
+        result.terminalId)
+    .addRow("TRAN REF:",
+        result.transactionRef)
+    .addStatusBanner(
+        "TRANSACTION SUCCESSFUL")
+    .build()</code></pre>
+          </div>
+        </div>
+
+        <div class="tab-content" id="bb-java">
+          <div class="code-wrapper">
+            <button class="copy-btn">Copy</button>
+            <pre><code>return new BitmapBuilder(384)
+    .addLogo(logoBitmap, 150, 150)
+    .addCentered("MY HOSPITAL", 19, true)
+    .addGap(10)
+    .addCentered("CUSTOMER RECEIPT", 23, true)
+    .addGap(20)
+    .addRow("TERMINAL ID:",
+        result.getTerminalId())
+    .addRow("TRAN REF:",
+        result.getTransactionRef())
+    .addStatusBanner(
+        "TRANSACTION SUCCESSFUL")
+    .build();</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6.3 buildReceiptBitmap() -->
+    <div class="section-card" id="autobuild">
+      <h2>6.3 buildReceiptBitmap() — SDK Auto-generated Receipt</h2>
+
+      <p>
+        The SDK can generate a fully formatted receipt bitmap automatically from a <span class="inline-code">TransactionResult</span>. Use this when you do not need a custom receipt layout.
+      </p>
+
+      <div class="code-tabs">
+        <div class="tab-header">
+          <button class="tab-btn active" data-tab="rb-kotlin">Kotlin</button>
+          <button class="tab-btn" data-tab="rb-java">Java</button>
+        </div>
+
+        <div class="tab-content active" id="rb-kotlin">
+          <div class="code-wrapper">
+            <button class="copy-btn">Copy</button>
+            <pre><code>override fun onApproved(
+    result: TransactionResult) {
+    val bitmap =
+        pos.buildReceiptBitmap(this, result)
+
+    pos.print(bitmap) { ok, msg ->
+        Log.d(TAG,
+            "Print: ok=$ok msg=$msg")
+    }
+}</code></pre>
+          </div>
+        </div>
+
+        <div class="tab-content" id="rb-java">
+          <div class="code-wrapper">
+            <button class="copy-btn">Copy</button>
+            <pre><code>@Override
+public void onApproved(TransactionResult result) {
+    Bitmap bitmap =
+        pos.buildReceiptBitmap(this, result);
+
+    pos.print(bitmap, (ok, msg) ->
+        Log.d(TAG, "Print: ok=" + ok + " msg=" + msg));
+}</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <nav class="page-nav" aria-label="Page navigation">
+      <a href="payment-flow.html" class="prev">
+        <span>←</span>
+        <span>
+          <span class="nav-label">Previous</span>
+          <span class="nav-title">Payment Flow</span>
+        </span>
+      </a>
+      <a href="utility-methods.html" class="next">
+        <span>
+          <span class="nav-label">Next</span>
+          <span class="nav-title">Status &amp; Utility Methods</span>
+        </span>
+        <span>→</span>
+      </a>
+    </nav>
+
+    <footer>
+      <p>OctopusTMS SDK Integration Guide — Version 1.0</p>
+      <p style="margin-top:0.5rem;">&copy; UNISWITCH &middot; <strong>OctopusTMS</strong> &middot; CONFIDENTIAL</p>
+    </footer>
+
+  </main>
+</div>
+
+<script src="assets/js/progress.js"></script>
+<script src="assets/js/sidebar.js"></script>
+<script src="assets/js/tabs.js"></script>
+<script src="assets/js/copy.js"></script>
+<script src="assets/js/search.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>

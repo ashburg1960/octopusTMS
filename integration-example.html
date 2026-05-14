@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Complete Integration Example — OctopusTMS SDK</title>
+  <meta name="description" content="Full end-to-end OctopusTMS POS SDK integration example in Kotlin and Java." />
+  <link rel="stylesheet" href="assets/css/global.css" />
+  <link rel="stylesheet" href="assets/css/sidebar.css" />
+  <link rel="stylesheet" href="assets/css/code-tabs.css" />
+  <link rel="stylesheet" href="assets/css/animations.css" />
+  <link rel="stylesheet" href="assets/css/responsive.css" />
+</head>
+<body>
+
+<div id="progress-bar"></div>
+<div id="sidebar-overlay"></div>
+<button id="mobile-menu-btn" aria-label="Open navigation">☰</button>
+
+<div class="layout">
+  <aside id="sidebar"></aside>
+
+  <main class="content">
+
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="index.html">Home</a>
+      <span class="sep">›</span>
+      <span class="current">10. Complete Integration Example</span>
+    </nav>
+
+    <h1>10. Complete Integration Example</h1>
+
+    <p>
+      The example below shows a complete <span class="inline-code">MainActivity</span> that demonstrates the entire SDK flow: initialisation, key exchange, payment, receipt printing, and teardown.
+    </p>
+
+    <div class="note-box" style="margin-bottom:1.5rem;">
+      <span class="box-icon">ℹ️</span>
+      <div class="box-content">
+        <strong>NOTE</strong>
+        This is the reference implementation. Copy this into your project and replace <span class="inline-code">"MyApp"</span> and <span class="inline-code">"My Hospital"</span> with your application and merchant details.
+      </div>
+    </div>
+
+    <!-- Main example -->
+    <div class="section-card">
+      <h2>MainActivity — Full Integration</h2>
+
+      <div class="code-tabs">
+        <div class="tab-header">
+          <button class="tab-btn active" data-tab="ex-kotlin">Kotlin</button>
+          <button class="tab-btn" data-tab="ex-java">Java</button>
+        </div>
+
+        <!-- Kotlin -->
+        <div class="tab-content active" id="ex-kotlin">
+          <div class="code-wrapper">
+            <button class="copy-btn">Copy</button>
+            <pre><code>class MainActivity : FragmentActivity() {
+
+    private val TAG = "MainActivity"
+
+    private val pos by lazy {
+        OctopusTMS.getInstance(
+            context = applicationContext,
+            config = OctopusTMS.Config(
+                appName = "MyApp",
+                enableLogs = BuildConfig.DEBUG
+            )
+        )
+    }
+
+    override fun onCreate(
+        savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+        initSDK()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        pos.destroy()
+    }
+
+    private fun initSDK() {
+        pos.initialize { result ->
+            when (result) {
+
+                is OctopusTMS.InitResult.Success -> {
+                    Log.d(TAG,
+                        "OEM: ${result.detectedOEM}")
+
+                    pos.downloadAndInjectKeys {
+                        ok, terminalId, err ->
+
+                        if (ok) {
+                            Log.d(TAG,
+                                "Ready: $terminalId")
+                        }
+                    }
+                }
+
+                is OctopusTMS.InitResult.Failed ->
+                    Log.e(TAG,
+                        "Init failed: ${result.reason}")
+
+                is OctopusTMS.InitResult.UnsupportedDevice ->
+                    Log.e(TAG, "Unsupported device")
+            }
+        }
+    }
+
+    fun onPayButtonClick() {
+        pos.startPayment(
+            activity = this,
+            amountInCents = 50000L,
+            merchantName = "My Hospital",
+            listener = object : PaymentResultListener {
+
+                override fun onApproved(
+                    result: TransactionResult) {
+                    Log.d(TAG,
+                        "Approved RRN: ${result.rrn}")
+                    printReceipt(result)
+                }
+
+                override fun onDeclined(
+                    result: TransactionResult) {
+                    Log.w(TAG,
+                        "Declined: ${result.responseMessage}")
+                }
+
+                override fun onCancelled() {
+                    Log.i(TAG, "Cancelled")
+                }
+
+                override fun onError(message: String) {
+                    Log.e(TAG, "Error: $message")
+                }
+            }
+        )
+    }
+
+    private fun printReceipt(result: TransactionResult) {
+        val bitmap = BitmapBuilder(paperWidth = 384)
+            .addLogo(logoBitmap, 150, 150)
+            .addCentered("MY HOSPITAL", 19, true)
+            .addGap(10)
+            .addCentered("CUSTOMER RECEIPT", 23, true)
+            .addGap(20)
+            .addRow("TERMINAL ID:", result.terminalId)
+            .addRow("TRAN REF:", result.transactionRef)
+            .addStatusBanner("TRANSACTION SUCCESSFUL")
+            .build()
+
+        pos.print(bitmap) { ok, msg ->
+            Log.d(TAG, "Print: ok=$ok msg=$msg")
+        }
+    }
+}</code></pre>
+          </div>
+        </div>
+
+        <!-- Java -->
+        <div class="tab-content" id="ex-java">
+          <div class="code-wrapper">
+            <button class="copy-btn">Copy</button>
+            <pre><code>public class MainActivity extends FragmentActivity {
+
+    private static final String TAG = "MainActivity";
+    private OctopusTMS pos;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        pos = OctopusTMS.getInstance(
+            getApplicationContext(),
+            new OctopusTMS.Config("MyApp", BuildConfig.DEBUG)
+        );
+
+        initSDK();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        pos.destroy();
+    }
+
+    private void initSDK() {
+        pos.initialize(result -> {
+            if (result instanceof OctopusTMS.InitResult.Success) {
+                OctopusTMS.InitResult.Success s =
+                    (OctopusTMS.InitResult.Success) result;
+                Log.d(TAG, "OEM: " + s.getDetectedOEM());
+
+                pos.downloadAndInjectKeys(
+                    (ok, terminalId, err) -> {
+                        if (ok) {
+                            Log.d(TAG, "Ready: " + terminalId);
+                        }
+                    }
+                );
+
+            } else if (result instanceof OctopusTMS.InitResult.Failed) {
+                OctopusTMS.InitResult.Failed f =
+                    (OctopusTMS.InitResult.Failed) result;
+                Log.e(TAG, "Init failed: " + f.getReason());
+
+            } else if (result instanceof
+                    OctopusTMS.InitResult.UnsupportedDevice) {
+                Log.e(TAG, "Unsupported device");
+            }
+        });
+    }
+
+    public void onPayButtonClick() {
+        pos.startPayment(
+            this,
+            50000L,
+            "My Hospital",
+            new PaymentResultListener() {
+
+                @Override
+                public void onApproved(TransactionResult result) {
+                    Log.d(TAG,
+                        "Approved RRN: " + result.getRrn());
+                    printReceipt(result);
+                }
+
+                @Override
+                public void onDeclined(TransactionResult result) {
+                    Log.w(TAG,
+                        "Declined: " +
+                        result.getResponseMessage());
+                }
+
+                @Override
+                public void onCancelled() {
+                    Log.i(TAG, "Cancelled");
+                }
+
+                @Override
+                public void onError(String message) {
+                    Log.e(TAG, "Error: " + message);
+                }
+            }
+        );
+    }
+
+    private void printReceipt(TransactionResult result) {
+        Bitmap bitmap = new BitmapBuilder(384)
+            .addLogo(logoBitmap, 150, 150)
+            .addCentered("MY HOSPITAL", 19, true)
+            .addGap(10)
+            .addCentered("CUSTOMER RECEIPT", 23, true)
+            .addGap(20)
+            .addRow("TERMINAL ID:", result.getTerminalId())
+            .addRow("TRAN REF:", result.getTransactionRef())
+            .addStatusBanner("TRANSACTION SUCCESSFUL")
+            .build();
+
+        pos.print(bitmap, (ok, msg) ->
+            Log.d(TAG, "Print: ok=" + ok + " msg=" + msg));
+    }
+}</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Flow summary -->
+    <div class="section-card">
+      <h2>Integration Flow Summary</h2>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Step</th>
+              <th>Method</th>
+              <th>When</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td><span class="inline-code">getInstance(context, config)</span></td>
+              <td>Activity <span class="inline-code">onCreate()</span></td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td><span class="inline-code">initialize(callback)</span></td>
+              <td>Immediately after <span class="inline-code">getInstance()</span></td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td><span class="inline-code">downloadAndInjectKeys(callback)</span></td>
+              <td>Inside <span class="inline-code">InitResult.Success</span> — once per day</td>
+            </tr>
+            <tr>
+              <td>4</td>
+              <td><span class="inline-code">startPayment(activity, amount, merchant, listener)</span></td>
+              <td>On user action, from main thread</td>
+            </tr>
+            <tr>
+              <td>5</td>
+              <td><span class="inline-code">buildReceiptBitmap()</span> / <span class="inline-code">BitmapBuilder</span></td>
+              <td>Inside <span class="inline-code">onApproved()</span></td>
+            </tr>
+            <tr>
+              <td>6</td>
+              <td><span class="inline-code">print(bitmap, callback)</span></td>
+              <td>After bitmap is built</td>
+            </tr>
+            <tr>
+              <td>7</td>
+              <td><span class="inline-code">destroy()</span></td>
+              <td>Activity <span class="inline-code">onDestroy()</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <nav class="page-nav" aria-label="Page navigation">
+      <a href="errors.html" class="prev">
+        <span>←</span>
+        <span>
+          <span class="nav-label">Previous</span>
+          <span class="nav-title">Error Reference</span>
+        </span>
+      </a>
+      <a href="index.html" class="next">
+        <span>
+          <span class="nav-label">Back to</span>
+          <span class="nav-title">Home</span>
+        </span>
+        <span>→</span>
+      </a>
+    </nav>
+
+    <footer>
+      <p>End of OctopusTMS SDK Integration Guide — Version 1.0</p>
+      <p style="margin-top:0.5rem;">&copy; UNISWITCH &middot; Powered by <strong>OctopusTMS</strong> &middot; CONFIDENTIAL</p>
+    </footer>
+
+  </main>
+</div>
+
+<script src="assets/js/progress.js"></script>
+<script src="assets/js/sidebar.js"></script>
+<script src="assets/js/tabs.js"></script>
+<script src="assets/js/copy.js"></script>
+<script src="assets/js/search.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+/* ============================================================
+   CODE-TABS.CSS — Kotlin / Java language switcher
+   ============================================================ */
+
+.code-tabs {
+  margin: 1.5rem 0;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid var(--clr-border);
+}
+
+/* ---------- Tab Header ---------- */
+.tab-header {
+  display: flex;
+  background: #1a2236;
+  padding: 0.5rem 0.75rem 0;
+  gap: 0.25rem;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+
+.tab-btn {
+  padding: 0.45rem 1rem;
+  border: none;
+  border-radius: 6px 6px 0 0;
+  font-size: 0.8rem;
+  font-weight: 600;
+  font-family: var(--font-sans);
+  cursor: pointer;
+  transition: var(--transition);
+  color: rgba(255,255,255,0.45);
+  background: transparent;
+  letter-spacing: 0.02em;
+}
+
+.tab-btn:hover {
+  color: rgba(255,255,255,0.75);
+  background: rgba(255,255,255,0.05);
+}
+
+.tab-btn.active {
+  background: var(--clr-navy);
+  color: #e2e8f0;
+}
+
+/* ---------- Tab Content ---------- */
+.tab-content {
+  display: none;
+  position: relative;
+}
+
+.tab-content.active { display: block; }
+
+.tab-content pre {
+  border-radius: 0;
+  margin: 0;
+  border: none;
+  border-top: none;
+}

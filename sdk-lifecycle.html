@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SDK Lifecycle — OctopusTMS SDK</title>
+  <meta name="description" content="SDK Lifecycle and destroy() teardown for OctopusTMS POS SDK singleton management." />
+  <link rel="stylesheet" href="assets/css/global.css" />
+  <link rel="stylesheet" href="assets/css/sidebar.css" />
+  <link rel="stylesheet" href="assets/css/code-tabs.css" />
+  <link rel="stylesheet" href="assets/css/animations.css" />
+  <link rel="stylesheet" href="assets/css/responsive.css" />
+</head>
+<body>
+
+<div id="progress-bar"></div>
+<div id="sidebar-overlay"></div>
+<button id="mobile-menu-btn" aria-label="Open navigation">☰</button>
+
+<div class="layout">
+  <aside id="sidebar"></aside>
+
+  <main class="content">
+
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="index.html">Home</a>
+      <span class="sep">›</span>
+      <span class="current">8. SDK Lifecycle</span>
+    </nav>
+
+    <h1>8. SDK Lifecycle — <span class="inline-code">destroy()</span></h1>
+
+    <p>
+      The OctopusTMS SDK is a singleton that holds a connection to the hardware service. To prevent memory leaks and service connection leaks, you must call <span class="inline-code">destroy()</span> when the host Activity is destroyed.
+    </p>
+
+    <!-- destroy() -->
+    <div class="section-card" id="destroy">
+      <h2>destroy()</h2>
+
+      <div class="code-tabs">
+        <div class="tab-header">
+          <button class="tab-btn active" data-tab="d-kotlin">Kotlin</button>
+          <button class="tab-btn" data-tab="d-java">Java</button>
+        </div>
+
+        <div class="tab-content active" id="d-kotlin">
+          <div class="code-wrapper">
+            <button class="copy-btn">Copy</button>
+            <pre><code>override fun onDestroy() {
+    super.onDestroy()
+    pos.destroy()
+}</code></pre>
+          </div>
+        </div>
+
+        <div class="tab-content" id="d-java">
+          <div class="code-wrapper">
+            <button class="copy-btn">Copy</button>
+            <pre><code>@Override
+protected void onDestroy() {
+    super.onDestroy();
+    pos.destroy();
+}</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="warning-box">
+        <span class="box-icon">⚠️</span>
+        <div class="box-content">
+          <strong>WARNING</strong>
+          After <span class="inline-code">destroy()</span> is called the singleton is null. Calling any SDK method after this will throw an <span class="inline-code">IllegalStateException</span>.
+        </div>
+      </div>
+    </div>
+
+    <!-- Lifecycle flow -->
+    <div class="section-card">
+      <h2>Singleton Lifecycle Flow</h2>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Activity Event</th>
+              <th>SDK Action</th>
+              <th>Note</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>onCreate()</td>
+              <td>Call <span class="inline-code">getInstance()</span></td>
+              <td>Creates or returns the existing singleton</td>
+            </tr>
+            <tr>
+              <td>onCreate() (after getInstance)</td>
+              <td>Call <span class="inline-code">initialize()</span></td>
+              <td>Binds to hardware service, detects OEM</td>
+            </tr>
+            <tr>
+              <td>After initialize succeeds</td>
+              <td>Call <span class="inline-code">downloadAndInjectKeys()</span></td>
+              <td>Downloads and injects terminal master keys</td>
+            </tr>
+            <tr>
+              <td>User action</td>
+              <td>Call <span class="inline-code">startPayment()</span></td>
+              <td>Must be on main thread</td>
+            </tr>
+            <tr>
+              <td>onDestroy()</td>
+              <td>Call <span class="inline-code">destroy()</span></td>
+              <td>Unbinds hardware service, clears singleton</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <nav class="page-nav" aria-label="Page navigation">
+      <a href="utility-methods.html" class="prev">
+        <span>←</span>
+        <span>
+          <span class="nav-label">Previous</span>
+          <span class="nav-title">Status &amp; Utility Methods</span>
+        </span>
+      </a>
+      <a href="errors.html" class="next">
+        <span>
+          <span class="nav-label">Next</span>
+          <span class="nav-title">Error Reference</span>
+        </span>
+        <span>→</span>
+      </a>
+    </nav>
+
+    <footer>
+      <p>OctopusTMS SDK Integration Guide — Version 1.0</p>
+      <p style="margin-top:0.5rem;">&copy; UNISWITCH &middot; <strong>OctopusTMS</strong> &middot; CONFIDENTIAL</p>
+    </footer>
+
+  </main>
+</div>
+
+<script src="assets/js/progress.js"></script>
+<script src="assets/js/sidebar.js"></script>
+<script src="assets/js/tabs.js"></script>
+<script src="assets/js/copy.js"></script>
+<script src="assets/js/search.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>

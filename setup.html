@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Requirements &amp; Setup — OctopusTMS SDK</title>
+  <meta name="description" content="Gradle dependencies, ViewBinding, ConstraintLayout, and AndroidManifest permissions for OctopusTMS POS SDK." />
+  <link rel="stylesheet" href="assets/css/global.css" />
+  <link rel="stylesheet" href="assets/css/sidebar.css" />
+  <link rel="stylesheet" href="assets/css/code-tabs.css" />
+  <link rel="stylesheet" href="assets/css/animations.css" />
+  <link rel="stylesheet" href="assets/css/responsive.css" />
+</head>
+<body>
+
+<div id="progress-bar"></div>
+<div id="sidebar-overlay"></div>
+<button id="mobile-menu-btn" aria-label="Open navigation">☰</button>
+
+<div class="layout">
+  <aside id="sidebar"></aside>
+
+  <main class="content">
+
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="index.html">Home</a>
+      <span class="sep">›</span>
+      <span class="current">2. Requirements &amp; Setup</span>
+    </nav>
+
+    <h1>2. Requirements &amp; Project Setup</h1>
+
+    <!-- 2.1 Gradle -->
+    <div class="section-card" id="gradle">
+      <h2>2.1 Gradle Dependency</h2>
+      <p>
+        Place the <span class="inline-code">OctopusTMSPosSdk-1.0.0.aar</span> file in the <span class="inline-code">libs/</span> folder at the module level, then declare the dependency in your module-level <span class="inline-code">build.gradle</span>.
+      </p>
+
+      <div class="code-tabs">
+        <div class="tab-header">
+          <button class="tab-btn active" data-tab="gradle-kotlin">Kotlin DSL</button>
+          <button class="tab-btn" data-tab="gradle-groovy">Groovy DSL</button>
+        </div>
+
+        <div class="tab-content active" id="gradle-kotlin">
+          <div class="code-wrapper">
+            <button class="copy-btn">Copy</button>
+            <pre><code>// build.gradle.kts (module)
+android { ... }
+
+dependencies {
+    implementation(files("libs/OctopusTMSPosSdk-1.0.0.aar"))
+
+    implementation("androidx.fragment:fragment-ktx:1.8.9")
+    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation("com.google.code.gson:gson:2.10.1")
+    implementation("org.bouncycastle:bcprov-jdk15on:1.70")
+    implementation("com.jakewharton.timber:timber:5.0.1")
+}</code></pre>
+          </div>
+        </div>
+
+        <div class="tab-content" id="gradle-groovy">
+          <div class="code-wrapper">
+            <button class="copy-btn">Copy</button>
+            <pre><code>// build.gradle (module — Groovy DSL)
+android { ... }
+
+dependencies {
+    implementation files('libs/OctopusTMSPosSdk-1.0.0.aar')
+
+    implementation 'androidx.fragment:fragment-ktx:1.8.9'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'com.squareup.okhttp3:okhttp:4.12.0'
+    implementation 'com.google.code.gson:gson:2.10.1'
+    implementation 'org.bouncycastle:bcprov-jdk15on:1.70'
+    implementation 'com.jakewharton.timber:timber:5.0.1'
+}</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="note-box">
+        <span class="box-icon">ℹ️</span>
+        <div class="box-content">
+          <strong>NOTE</strong>
+          The SDK internally uses OkHttp for TMS communication, Gson for JSON serialisation, and BouncyCastle for key management.
+        </div>
+      </div>
+    </div>
+
+    <!-- 2.2 ViewBinding -->
+    <div class="section-card" id="viewbinding">
+      <h2>2.2 ViewBinding — Why It Is Mandatory</h2>
+      <p>
+        The SDK's internal UI components are built using Android ViewBinding.
+      </p>
+
+      <div class="code-tabs">
+        <div class="tab-header">
+          <button class="tab-btn active" data-tab="vb-kotlin">Kotlin DSL</button>
+          <button class="tab-btn" data-tab="vb-groovy">Groovy DSL</button>
+        </div>
+
+        <div class="tab-content active" id="vb-kotlin">
+          <div class="code-wrapper">
+            <button class="copy-btn">Copy</button>
+            <pre><code>android {
+    buildFeatures {
+        viewBinding = true
+    }
+}</code></pre>
+          </div>
+        </div>
+
+        <div class="tab-content" id="vb-groovy">
+          <div class="code-wrapper">
+            <button class="copy-btn">Copy</button>
+            <pre><code>android {
+    buildFeatures {
+        viewBinding true
+    }
+}</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2.3 ConstraintLayout -->
+    <div class="section-card" id="constraintlayout">
+      <h2>2.3 ConstraintLayout — Why It Is Mandatory</h2>
+
+      <div class="warning-box">
+        <span class="box-icon">⚠️</span>
+        <div class="box-content">
+          <strong>WARNING</strong>
+          Without ConstraintLayout the app will crash at runtime with an InflateException.
+        </div>
+      </div>
+
+      <div class="code-wrapper" style="margin-top:1rem;">
+        <button class="copy-btn">Copy</button>
+        <pre><code>android.view.InflateException:
+Error inflating class
+androidx.constraintlayout.widget.ConstraintLayout</code></pre>
+      </div>
+    </div>
+
+    <!-- 2.4 Permissions -->
+    <div class="section-card" id="permissions">
+      <h2>2.4 AndroidManifest Permissions</h2>
+
+      <div class="code-wrapper">
+        <button class="copy-btn">Copy</button>
+        <pre><code>&lt;uses-permission android:name="android.permission.INTERNET" /&gt;
+&lt;uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /&gt;
+&lt;uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /&gt;
+&lt;uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" /&gt;</code></pre>
+      </div>
+
+      <div class="warning-box">
+        <span class="box-icon">⚠️</span>
+        <div class="box-content">
+          <strong>WARNING</strong>
+          ACCESS_FINE_LOCATION and ACCESS_COARSE_LOCATION are runtime permissions on Android 6.0 and above.
+        </div>
+      </div>
+    </div>
+
+    <nav class="page-nav" aria-label="Page navigation">
+      <a href="overview.html" class="prev">
+        <span>←</span>
+        <span>
+          <span class="nav-label">Previous</span>
+          <span class="nav-title">Overview</span>
+        </span>
+      </a>
+      <a href="initialization.html" class="next">
+        <span>
+          <span class="nav-label">Next</span>
+          <span class="nav-title">Initialisation</span>
+        </span>
+        <span>→</span>
+      </a>
+    </nav>
+
+    <footer>
+      <p>OctopusTMS SDK Integration Guide — Version 1.0</p>
+      <p style="margin-top:0.5rem;">&copy; UNISWITCH &middot; <strong>OctopusTMS</strong> &middot; CONFIDENTIAL</p>
+    </footer>
+
+  </main>
+</div>
+
+<script src="assets/js/progress.js"></script>
+<script src="assets/js/sidebar.js"></script>
+<script src="assets/js/tabs.js"></script>
+<script src="assets/js/copy.js"></script>
+<script src="assets/js/search.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>

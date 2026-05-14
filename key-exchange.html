@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Key Exchange — OctopusTMS SDK</title>
+  <meta name="description" content="Terminal key exchange using downloadAndInjectKeys() in OctopusTMS POS SDK." />
+  <link rel="stylesheet" href="assets/css/global.css" />
+  <link rel="stylesheet" href="assets/css/sidebar.css" />
+  <link rel="stylesheet" href="assets/css/code-tabs.css" />
+  <link rel="stylesheet" href="assets/css/animations.css" />
+  <link rel="stylesheet" href="assets/css/responsive.css" />
+</head>
+<body>
+
+<div id="progress-bar"></div>
+<div id="sidebar-overlay"></div>
+<button id="mobile-menu-btn" aria-label="Open navigation">☰</button>
+
+<div class="layout">
+  <aside id="sidebar"></aside>
+
+  <main class="content">
+
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="index.html">Home</a>
+      <span class="sep">›</span>
+      <span class="current">4. Key Exchange</span>
+    </nav>
+
+    <h1>4. Key Exchange — <span class="inline-code">downloadAndInjectKeys()</span></h1>
+
+    <p>
+      This method contacts the UNISWITCH TMS, downloads the terminal master keys bound to the device's hardware serial number, and injects them into the PIN-pad security module.
+    </p>
+
+    <div class="section-card" id="download">
+      <h2>downloadAndInjectKeys()</h2>
+
+      <div class="code-tabs">
+        <div class="tab-header">
+          <button class="tab-btn active" data-tab="ke-kotlin">Kotlin</button>
+          <button class="tab-btn" data-tab="ke-java">Java</button>
+        </div>
+
+        <div class="tab-content active" id="ke-kotlin">
+          <div class="code-wrapper">
+            <button class="copy-btn">Copy</button>
+            <pre><code>pos.downloadAndInjectKeys {
+    success,
+    terminalId,
+    errorMessage ->
+
+    if (success) {
+        Log.d(TAG,
+            "Terminal ID: $terminalId")
+    } else {
+        Log.e(TAG,
+            "Key exchange failed: $errorMessage")
+    }
+}</code></pre>
+          </div>
+        </div>
+
+        <div class="tab-content" id="ke-java">
+          <div class="code-wrapper">
+            <button class="copy-btn">Copy</button>
+            <pre><code>pos.downloadAndInjectKeys((success, terminalId, errorMessage) -> {
+    if (success) {
+        Log.d(TAG, "Terminal ID: " + terminalId);
+    } else {
+        Log.e(TAG, "Key exchange failed: " + errorMessage);
+    }
+});</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="note-box">
+        <span class="box-icon">ℹ️</span>
+        <div class="box-content">
+          <strong>NOTE</strong>
+          Re-call <span class="inline-code">downloadAndInjectKeys()</span> on application startup or at least once per day.
+        </div>
+      </div>
+
+      <h3>Callback Parameters</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Parameter</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>success</td>
+              <td>Boolean</td>
+              <td>True if keys were downloaded and injected successfully.</td>
+            </tr>
+            <tr>
+              <td>terminalId</td>
+              <td>String?</td>
+              <td>The terminal ID assigned by the UNISWITCH TMS. Null on failure.</td>
+            </tr>
+            <tr>
+              <td>errorMessage</td>
+              <td>String?</td>
+              <td>Human-readable error description. Null on success.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <nav class="page-nav" aria-label="Page navigation">
+      <a href="initialization.html" class="prev">
+        <span>←</span>
+        <span>
+          <span class="nav-label">Previous</span>
+          <span class="nav-title">Initialisation</span>
+        </span>
+      </a>
+      <a href="payment-flow.html" class="next">
+        <span>
+          <span class="nav-label">Next</span>
+          <span class="nav-title">Payment Flow</span>
+        </span>
+        <span>→</span>
+      </a>
+    </nav>
+
+    <footer>
+      <p>OctopusTMS SDK Integration Guide — Version 1.0</p>
+      <p style="margin-top:0.5rem;">&copy; UNISWITCH &middot; <strong>OctopusTMS</strong> &middot; CONFIDENTIAL</p>
+    </footer>
+
+  </main>
+</div>
+
+<script src="assets/js/progress.js"></script>
+<script src="assets/js/sidebar.js"></script>
+<script src="assets/js/tabs.js"></script>
+<script src="assets/js/copy.js"></script>
+<script src="assets/js/search.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>
